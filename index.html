@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Integrated Poultry Business Needs Assessment – 24-Hour Economy Policy Ghana</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --primary: #1a73e8;
+    --primary-dark: #1557b0;
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --border: #dadce0;
+    --text: #202124;
+    --muted: #5f6368;
+    --error: #d93025;
+    --green: #1e8e3e;
+    --radius: 8px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Roboto', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+  .form-wrapper { max-width: 680px; margin: 0 auto; padding: 0 16px; }
+
+  /* Progress bar */
+  .progress-bar-wrap {
+    position: sticky; top: 0; z-index: 100;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.1);
+    padding: 8px 16px;
+  }
+  .progress-inner { max-width: 680px; margin: 0 auto; }
+  .progress-label { font-size: .75rem; color: var(--muted); margin-bottom: 4px; }
+  .progress-track { background: #e8eaed; border-radius: 100px; height: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--primary); border-radius: 100px; width: 0%; transition: width .4s ease; }
+
+  /* Header */
+  .header-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border-top: 10px solid var(--primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.08);
+    padding: 28px 24px 24px;
+    margin-top: 28px;
+    margin-bottom: 12px;
+  }
+  .header-card h1 {
+    font-family: 'Google Sans', sans-serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 14px;
+  }
+  .header-card p { font-size: .938rem; color: var(--muted); line-height: 1.6; }
+  .required-note { margin-top: 14px; font-size: .813rem; color: var(--muted); }
+  .required-star { color: var(--error); }
+
+  /* Config banner — shown only when SHEETS_URL is not set */
+  .config-banner {
+    background: #fef7e0;
+    border: 1px solid #f9ab00;
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    font-size: .875rem;
+    color: #7a5c00;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .config-banner strong { display: block; margin-bottom: 4px; color: #5f4500; }
+
+  /* Section header */
+  .section-header {
+    background: var(--card);
+    border-radius: var(--radius);
+    border-left: 6px solid var(--primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    padding: 18px 24px;
+    margin-top: 22px;
+    margin-bottom: 8px;
+  }
+  .section-header h2 {
+    font-family: 'Google Sans', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Question card */
+  .question-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: 0 1px 2px rgba(0,0,0,.1), 0 1px 6px rgba(0,0,0,.07);
+    padding: 22px 24px 20px;
+    margin-bottom: 10px;
+    transition: box-shadow .2s;
+  }
+  .question-card:hover { box-shadow: 0 2px 6px rgba(0,0,0,.14), 0 2px 12px rgba(0,0,0,.09); }
+  .question-label {
+    font-size: .938rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .req { color: var(--error); margin-left: 2px; }
+
+  /* Inputs */
+  .text-input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 6px 0;
+    font-size: .938rem;
+    font-family: 'Roboto', sans-serif;
+    color: var(--text);
+    background: transparent;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .text-input:focus { border-bottom: 2px solid var(--primary); }
+  .text-input::placeholder { color: #bdc1c6; }
+  textarea.text-input { resize: vertical; min-height: 80px; }
+
+  .select-input {
+    width: 100%; max-width: 320px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: .938rem;
+    font-family: 'Roboto', sans-serif;
+    color: var(--text);
+    background: #fff;
+    outline: none;
+    cursor: pointer;
+  }
+  .select-input:focus { border-color: var(--primary); }
+
+  /* Options */
+  .options-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .option-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 5px 8px; border-radius: 4px; cursor: pointer;
+    transition: background .15s;
+  }
+  .option-item:hover { background: #f8f9fa; }
+  .option-item input[type="radio"],
+  .option-item input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--primary);
+    cursor: pointer; flex-shrink: 0;
+  }
+  .option-item label { font-size: .938rem; color: var(--text); cursor: pointer; }
+
+  /* Misc helpers */
+  .sub-label { font-size: .813rem; color: var(--muted); margin-bottom: 8px; margin-top: -6px; }
+  .inline-fields { display: flex; gap: 20px; flex-wrap: wrap; }
+  .inline-field { flex: 1; min-width: 140px; }
+  .inline-field .field-label { font-size: .813rem; color: var(--muted); margin-bottom: 4px; }
+  .input-group { display: flex; align-items: baseline; gap: 8px; }
+  .input-unit { font-size: .875rem; color: var(--muted); }
+  .conditional { margin-top: 12px; }
+  .cond-label { font-size: .875rem; font-weight: 500; color: var(--muted); margin-bottom: 8px; }
+  .numbered-inputs { display: flex; flex-direction: column; gap: 8px; }
+  .numbered-input { display: flex; align-items: center; gap: 10px; }
+  .numbered-input span { font-size: .875rem; color: var(--muted); min-width: 16px; }
+
+  /* Footer */
+  .form-footer { margin-top: 28px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .btn-submit {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 36px;
+    font-size: 1rem;
+    font-family: 'Google Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .2s, box-shadow .2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-submit:hover:not(:disabled) { background: var(--primary-dark); box-shadow: 0 2px 8px rgba(26,115,232,.4); }
+  .btn-submit:disabled { opacity: .6; cursor: not-allowed; }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Success screen */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 24px;
+  }
+  .success-icon {
+    width: 72px; height: 72px;
+    background: #e6f4ea;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2rem;
+  }
+  .success-screen h2 {
+    font-family: 'Google Sans', sans-serif;
+    font-size: 1.5rem;
+    color: var(--green);
+    margin-bottom: 12px;
+  }
+  .success-screen p { color: var(--muted); font-size: .938rem; line-height: 1.7; max-width: 420px; margin: 0 auto; }
+
+  /* Error toast */
+  .error-toast {
+    display: none;
+    background: #fce8e6;
+    border: 1px solid #f28b82;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: .875rem;
+    color: #c5221f;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 480px) {
+    .header-card, .question-card, .section-header { padding: 18px 16px; }
+    .header-card h1 { font-size: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ PROGRESS BAR ══ -->
+<div class="progress-bar-wrap">
+  <div class="progress-inner">
+    <div class="progress-label" id="progress-label">Section 1 of 12</div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+</div>
+
+<div class="form-wrapper">
+
+  <!-- ══ CONFIG WARNING (hidden once URL is set) ══ -->
+  <div class="config-banner" id="config-banner" style="display:none">
+    <span>⚠️</span>
+    <div>
+      <strong>Google Sheets not connected</strong>
+      Open this file, find <code>const SHEETS_URL = ''</code> near the top of the &lt;script&gt;, and paste your Apps Script Web App URL between the quotes before publishing.
+    </div>
+  </div>
+
+  <!-- ══ HEADER ══ -->
+  <div class="header-card">
+    <h1>Integrated Poultry Business Needs Assessment<br/>(24-Hour Economy Policy – Ghana)</h1>
+    <p>This survey is designed to assess the technical, financial, and operational needs of poultry businesses to support continuous (24-hour) production under Ghana's industrial transformation agenda. All responses will be treated confidentially.</p>
+    <p class="required-note"><span class="required-star">*</span> Indicates required question</p>
+  </div>
+
+  <!-- ══ FORM ══ -->
+  <form id="main-form" novalidate>
+
+    <!-- ─── SECTION 1 ─── -->
+    <div class="section-header">
+      <h2><span>🔹</span> Section 1: General Information</h2>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">1. Farm / Company Name <span class="req">*</span></div>
+      <input class="text-input" type="text" data-label="S1 Farm/Company Name" placeholder="Your answer" required/>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">2. Name of Respondent <span class="req">*</span></div>
+      <input class="text-input" type="text" data-label="S1 Respondent Name" placeholder="Your answer" required/>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">3. Contact Details <span class="req">*</span></div>
+      <div class="sub-label">Phone number</div>
+      <input class="text-input" type="tel" data-label="S1 Phone" placeholder="+233 …" style="margin-bottom:14px"/>
+      <div class="sub-label">Email address</div>
+      <input class="text-input" type="email" data-label="S1 Email" placeholder="example@email.com"/>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">4. Region <span class="req">*</span></div>
+      <select class="select-input" data-label="S1 Region" required>
+        <option value="" disabled selected>Choose region</option>
+        <option>Greater Accra</option><option>Ashanti</option><option>Eastern</option>
+        <option>Western</option><option>Northern</option><option>Bono</option><option>Others</option>
+      </select>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">5. District</div>
+      <input class="text-input" type="text" data-label="S1 District" placeholder="Enter district"/>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">6. Type of Operation <span class="req">*</span> <small style="font-weight:400;color:var(--muted)">(select all that apply)</small></div>
+      <ul class="options-list" data-label="S1 Type of Operation" data-type="checkbox">
+        <li class="option-item"><input type="checkbox" id="op1"/><label for="op1">Breeder Farm</label></li>
+        <li class="option-item"><input type="checkbox" id="op2"/><label for="op2">Hatchery</label></li>
+        <li class="option-item"><input type="checkbox" id="op3"/><label for="op3">Broiler Production</label></li>
+        <li class="option-item"><input type="checkbox" id="op4"/><label for="op4">Layer Production</label></li>
+        <li class="option-item"><input type="checkbox" id="op5"/><label for="op5">Feed Mill</label></li>
+        <li class="option-item"><input type="checkbox" id="op6"/><label for="op6">Processing Plant</label></li>
+        <li class="option-item"><input type="checkbox" id="op7"/><label for="op7">Input Supplier</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">7. Scale of Operation <span class="req">*</span></div>
+      <ul class="options-list" data-label="S1 Scale of Operation" data-type="radio">
+        <li class="option-item"><input type="radio" name="scale" id="sc1"/><label for="sc1">Small (&lt;5,000 birds)</label></li>
+        <li class="option-item"><input type="radio" name="scale" id="sc2"/><label for="sc2">Medium (5,000 – 50,000 birds)</label></li>
+        <li class="option-item"><input type="radio" name="scale" id="sc3"/><label for="sc3">Large (&gt;50,000 birds)</label></li>
+      </ul>
+    </div>
+
+    <!-- ─── SECTION 2 ─── -->
+    <div class="section-header"><h2><span>🔹</span> Section 2: Infrastructure &amp; Facilities</h2></div>
+
+    <div class="question-card">
+      <div class="question-label">1. Do you have adequate land for expansion? <span class="req">*</span></div>
+      <ul class="options-list" data-label="S2 Adequate Land" data-type="radio">
+        <li class="option-item"><input type="radio" name="land_expand" id="le1"/><label for="le1">Yes</label></li>
+        <li class="option-item"><input type="radio" name="land_expand" id="le2"/><label for="le2">No</label></li>
+      </ul>
+      <div style="margin-top:14px">
+        <div class="sub-label">Total land size</div>
+        <div class="inline-fields">
+          <div class="inline-field">
+            <div class="field-label">Utilized (acres/ha)</div>
+            <input class="text-input" type="text" data-label="S2 Land Utilized" placeholder="e.g. 5 acres"/>
+          </div>
+          <div class="inline-field">
+            <div class="field-label">Unutilized (acres/ha)</div>
+            <input class="text-input" type="text" data-label="S2 Land Unutilized" placeholder="e.g. 2 acres"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">2. Type of Poultry Housing <span class="req">*</span></div>
+      <ul class="options-list" data-label="S2 Housing Type" data-type="radio">
+        <li class="option-item"><input type="radio" name="housing" id="h1"/><label for="h1">Open-sided</label></li>
+        <li class="option-item"><input type="radio" name="housing" id="h2"/><label for="h2">Environmentally controlled</label></li>
+        <li class="option-item"><input type="radio" name="housing" id="h3"/><label for="h3">Mixed</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">3. Available Infrastructure <small style="font-weight:400;color:var(--muted)">(select all that apply)</small></div>
+      <ul class="options-list" data-label="S2 Infrastructure" data-type="checkbox">
+        <li class="option-item"><input type="checkbox" id="inf1"/><label for="inf1">Poultry houses</label></li>
+        <li class="option-item"><input type="checkbox" id="inf2"/><label for="inf2">Hatchery</label></li>
+        <li class="option-item"><input type="checkbox" id="inf3"/><label for="inf3">Feed mill</label></li>
+        <li class="option-item"><input type="checkbox" id="inf4"/><label for="inf4">Processing unit</label></li>
+        <li class="option-item"><input type="checkbox" id="inf5"/><label for="inf5">Cold storage</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">4. Cold Storage Capacity</div>
+      <input class="text-input" type="text" data-label="S2 Cold Storage Capacity" placeholder="e.g. 10 tonnes"/>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">5. Biosecurity Structures Available <small style="font-weight:400;color:var(--muted)">(select all that apply)</small></div>
+      <ul class="options-list" data-label="S2 Biosecurity Structures" data-type="checkbox">
+        <li class="option-item"><input type="checkbox" id="bio1"/><label for="bio1">Fencing</label></li>
+        <li class="option-item"><input type="checkbox" id="bio2"/><label for="bio2">Footbath</label></li>
+        <li class="option-item"><input type="checkbox" id="bio3"/><label for="bio3">Isolation unit</label></li>
+        <li class="option-item"><input type="checkbox" id="bio4"/><label for="bio4">None</label></li>
+      </ul>
+    </div>
+
+    <!-- ─── SECTION 3 ─── -->
+    <div class="section-header"><h2><span>🔹</span> Section 3: Energy &amp; Utilities (24-Hour Operations)</h2></div>
+
+    <div class="question-card">
+      <div class="question-label">1. Do you have access to reliable electricity? <span class="req">*</span></div>
+      <ul class="options-list" data-label="S3 Reliable Electricity" data-type="radio">
+        <li class="option-item"><input type="radio" name="electricity" id="el1"/><label for="el1">Yes</label></li>
+        <li class="option-item"><input type="radio" name="electricity" id="el2"/><label for="el2">No</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">2. Main Power Source <span class="req">*</span></div>
+      <ul class="options-list" data-label="S3 Main Power Source" data-type="radio">
+        <li class="option-item"><input type="radio" name="power" id="pw1"/><label for="pw1">National grid</label></li>
+        <li class="option-item"><input type="radio" name="power" id="pw2"/><label for="pw2">Generator</label></li>
+        <li class="option-item"><input type="radio" name="power" id="pw3"/><label for="pw3">Solar</label></li>
+        <li class="option-item"><input type="radio" name="power" id="pw4"/><label for="pw4">Mixed</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">3. Backup Power Availability <span class="req">*</span></div>
+      <ul class="options-list" data-label="S3 Backup Power" data-type="radio">
+        <li class="option-item"><input type="radio" name="backup" id="bp1"/><label for="bp1">Yes</label></li>
+        <li class="option-item"><input type="radio" name="backup" id="bp2"/><label for="bp2">No</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">4. Generator Capacity (kVA)</div>
+      <div class="input-group">
+        <input class="text-input" type="number" data-label="S3 Generator kVA" placeholder="0" style="max-width:120px" min="0"/>
+        <span class="input-unit">kVA</span>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">5. Water Source <span class="req">*</span></div>
+      <ul class="options-list" data-label="S3 Water Source" data-type="radio">
+        <li class="option-item"><input type="radio" name="water" id="ws1"/><label for="ws1">Borehole</label></li>
+        <li class="option-item"><input type="radio" name="water" id="ws2"/><label for="ws2">Pipe-borne</label></li>
+        <li class="option-item"><input type="radio" name="water" id="ws3"/><label for="ws3">River / stream</label></li>
+        <li class="option-item"><input type="radio" name="water" id="ws4"/><label for="ws4">Others</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">6. Can your farm operate continuously for 24 hours? <span class="req">*</span></div>
+      <ul class="options-list" data-label="S3 Can Operate 24h" data-type="radio">
+        <li class="option-item"><input type="radio" name="operate24" id="op24y" onclick="toggle('constraints-box', false)"/><label for="op24y">Yes</label></li>
+        <li class="option-item"><input type="radio" name="operate24" id="op24n" onclick="toggle('constraints-box', true)"/><label for="op24n">No</label></li>
+      </ul>
+      <div class="conditional" id="constraints-box" style="display:none">
+        <div class="cond-label">If NO, what are the constraints?</div>
+        <div class="numbered-inputs">
+          <div class="numbered-input"><span>1.</span><input class="text-input" type="text" data-label="S3 Constraint 1" placeholder="Constraint"/></div>
+          <div class="numbered-input"><span>2.</span><input class="text-input" type="text" data-label="S3 Constraint 2" placeholder="Constraint"/></div>
+          <div class="numbered-input"><span>3.</span><input class="text-input" type="text" data-label="S3 Constraint 3" placeholder="Constraint"/></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 4 ─── -->
+    <div class="section-header"><h2><span>🔹</span> Section 4: Production &amp; Technology</h2></div>
+
+    <div class="question-card">
+      <div class="question-label">1. Average Number of Birds Per Cycle <span class="req">*</span></div>
+      <input class="text-input" type="number" data-label="S4 Birds Per Cycle" placeholder="e.g. 10000" min="0"/>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">2. Production Type <span class="req">*</span></div>
+      <ul class="options-list" data-label="S4 Production Type" data-type="radio">
+        <li class="option-item"><input type="radio" name="prodtype" id="pt1"/><label for="pt1">Broiler</label></li>
+        <li class="option-item"><input type="radio" name="prodtype" id="pt2"/><label for="pt2">Layer</label></li>
+        <li class="option-item"><input type="radio" name="prodtype" id="pt3"/><label for="pt3">Breeder</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">3. Average Mortality Rate (%)</div>
+      <div class="input-group">
+        <input class="text-input" type="number" data-label="S4 Mortality Rate %" placeholder="0" style="max-width:100px" min="0" max="100"/>
+        <span class="input-unit">%</span>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">4. Feed Conversion Ratio (FCR)</div>
+      <input class="text-input" type="number" data-label="S4 FCR" placeholder="e.g. 1.8" step="0.01" min="0" style="max-width:140px"/>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">5. Do You Use Automated Systems? <small style="font-weight:400;color:var(--muted)">(select all that apply)</small></div>
+      <ul class="options-list" data-label="S4 Automated Systems" data-type="checkbox">
+        <li class="option-item"><input type="checkbox" id="auto1"/><label for="auto1">Feeding</label></li>
+        <li class="option-item"><input type="checkbox" id="auto2"/><label for="auto2">Drinking</label></li>
+        <li class="option-item"><input type="checkbox" id="auto3"/><label for="auto3">Ventilation</label></li>
+        <li class="option-item"><input type="checkbox" id="auto4"/><label for="auto4">None</label></li>
+      </ul>
+    </div>
+
+    <!-- ─── SECTION 5 ─── -->
+    <div class="section-header"><h2><span>🔹</span> Section 5: Feed &amp; Input Supply</h2></div>
+
+    <div class="question-card">
+      <div class="question-label">1. Source of Feed <span class="req">*</span></div>
+      <ul class="options-list" data-label="S5 Feed Source" data-type="radio">
+        <li class="option-item"><input type="radio" name="feedsrc" id="fs1"/><label for="fs1">Own feed mill</label></li>
+        <li class="option-item"><input type="radio" name="feedsrc" id="fs2"/><label for="fs2">Commercial suppliers</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">2. Are Feed Inputs Readily Available Year-Round? <span class="req">*</span></div>
+      <ul class="options-list" data-label="S5 Feed Available Year-Round" data-type="radio">
+        <li class="option-item"><input type="radio" name="feedavail" id="fa1"/><label for="fa1">Yes</label></li>
+        <li class="option-item"><input type="radio" name="feedavail" id="fa2"/><label for="fa2">No</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">3. Major Feed Challenges <small style="font-weight:400;color:var(--muted)">(select all that apply)</small></div>
+      <ul class="options-list" data-label="S5 Feed Challenges" data-type="checkbox">
+        <li class="option-item"><input type="checkbox" id="fc1"/><label for="fc1">High cost</label></li>
+        <li class="option-item"><input type="checkbox" id="fc2"/><label for="fc2">Scarcity of maize</label></li>
+        <li class="option-item"><input type="checkbox" id="fc3"/><label for="fc3">Scarcity of soybean</label></li>
+        <li class="option-item"><input type="checkbox" id="fc4"/><label for="fc4">Poor quality feed</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">4. Feed Storage Capacity</div>
+      <input class="text-input" type="text" data-label="S5 Feed Storage Capacity" placeholder="e.g. 50 tonnes"/>
+    </div>
+
+    <!-- ─── SECTION 6 ─── -->
+    <div class="section-header"><h2><span>🔹</span> Section 6: Human Resource &amp; Labour</h2></div>
+
+    <div class="question-card">
+      <div class="question-label">1. Total Number of Workers <span class="req">*</span></div>
+      <input class="text-input" type="number" data-label="S6 Total Workers" placeholder="0" min="0"/>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">2. Skilled Staff Available <small style="font-weight:400;color:var(--muted)">(select all that apply)</small></div>
+      <ul class="options-list" data-label="S6 Skilled Staff" data-type="checkbox">
+        <li class="option-item"><input type="checkbox" id="sk1"/><label for="sk1">Veterinarian</label></li>
+        <li class="option-item"><input type="checkbox" id="sk2"/><label for="sk2">Animal scientist</label></li>
+        <li class="option-item"><input type="checkbox" id="sk3"/><label for="sk3">Technician</label></li>
+        <li class="option-item"><input type="checkbox" id="sk4"/><label for="sk4">None</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">3. Do You Operate Shift Systems? <span class="req">*</span></div>
+      <ul class="options-list" data-label="S6 Shift Systems" data-type="radio">
+        <li class="option-item"><input type="radio" name="shifts" id="sh1" onclick="toggle('shift-num', true)"/><label for="sh1">Yes</label></li>
+        <li class="option-item"><input type="radio" name="shifts" id="sh2" onclick="toggle('shift-num', false)"/><label for="sh2">No</label></li>
+      </ul>
+      <div class="conditional" id="shift-num" style="display:none">
+        <div class="cond-label" style="margin-top:12px">If YES, number of shifts:</div>
+        <ul class="options-list" data-label="S6 Number of Shifts" data-type="radio">
+          <li class="option-item"><input type="radio" name="shift_count" id="shc1"/><label for="shc1">1</label></li>
+          <li class="option-item"><input type="radio" name="shift_count" id="shc2"/><label for="shc2">2</label></li>
+          <li class="option-item"><input type="radio" name="shift_count" id="shc3"/><label for="shc3">3</label></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">4. Training Needs <small style="font-weight:400;color:var(--muted)">(select all that apply)</small></div>
+      <ul class="options-list" data-label="S6 Training Needs" data-type="checkbox">
+        <li class="option-item"><input type="checkbox" id="tr1"/><label for="tr1">Biosecurity</label></li>
+        <li class="option-item"><input type="checkbox" id="tr2"/><label for="tr2">Equipment handling</label></li>
+        <li class="option-item"><input type="checkbox" id="tr3"/><label for="tr3">Processing</label></li>
+        <li class="option-item"><input type="checkbox" id="tr4"/><label for="tr4">Farm management</label></li>
+        <li class="option-item"><input type="checkbox" id="tr5"/><label for="tr5">Food safety and handling</label></li>
+        <li class="option-item"><input type="checkbox" id="tr6"/><label for="tr6">Customer relations</label></li>
+      </ul>
+    </div>
+
+    <!-- ─── SECTION 7 ─── -->
+    <div class="section-header"><h2><span>🔹</span> Section 7: Finance &amp; Investment</h2></div>
+
+    <div class="question-card">
+      <div class="question-label">1. Estimated Capital Invested (GHS)</div>
+      <div class="input-group">
+        <span class="input-unit">GHS</span>
+        <input class="text-input" type="number" data-label="S7 Capital Invested GHS" placeholder="0" min="0"/>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">2. Access to Finance <span class="req">*</span></div>
+      <ul class="options-list" data-label="S7 Access to Finance" data-type="radio">
+        <li class="option-item"><input type="radio" name="finance" id="fin1"/><label for="fin1">Yes</label></li>
+        <li class="option-item"><input type="radio" name="finance" id="fin2"/><label for="fin2">No</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">3. Source of Finance <small style="font-weight:400;color:var(--muted)">(select all that apply)</small></div>
+      <ul class="options-list" data-label="S7 Finance Source" data-type="checkbox">
+        <li class="option-item"><input type="checkbox" id="fin_s1"/><label for="fin_s1">Bank loan</label></li>
+        <li class="option-item"><input type="checkbox" id="fin_s2"/><label for="fin_s2">Personal funds</label></li>
+        <li class="option-item"><input type="checkbox" id="fin_s3"/><label for="fin_s3">Government support</label></li>
+        <li class="option-item"><input type="checkbox" id="fin_s4"/><label for="fin_s4">Donor support</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">4. Key Financial Challenges <small style="font-weight:400;color:var(--muted)">(select all that apply)</small></div>
+      <ul class="options-list" data-label="S7 Financial Challenges" data-type="checkbox">
+        <li class="option-item"><input type="checkbox" id="fch1"/><label for="fch1">High interest rates</label></li>
+        <li class="option-item"><input type="checkbox" id="fch2"/><label for="fch2">Lack of collateral</label></li>
+        <li class="option-item"><input type="checkbox" id="fch3"/><label for="fch3">Inadequate capital</label></li>
+        <li class="option-item"><input type="checkbox" id="fch4"/><label for="fch4">Delay in processes</label></li>
+        <li class="option-item"><input type="checkbox" id="fch5"/><label for="fch5">Limited financial institutions interested in Agribusiness</label></li>
+      </ul>
+    </div>
+
+    <!-- ─── SECTION 8 ─── -->
+    <div class="section-header"><h2><span>🔹</span> Section 8: Processing &amp; Value Addition</h2></div>
+
+    <div class="question-card">
+      <div class="question-label">1. Do You Process Your Birds? <span class="req">*</span></div>
+      <ul class="options-list" data-label="S8 Process Birds" data-type="radio">
+        <li class="option-item"><input type="radio" name="process" id="proc1"/><label for="proc1">Yes</label></li>
+        <li class="option-item"><input type="radio" name="process" id="proc2"/><label for="proc2">No</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">2. Processing Level <small style="font-weight:400;color:var(--muted)">(select all that apply)</small></div>
+      <ul class="options-list" data-label="S8 Processing Level" data-type="checkbox">
+        <li class="option-item"><input type="checkbox" id="pl1"/><label for="pl1">Live bird sales</label></li>
+        <li class="option-item"><input type="checkbox" id="pl2"/><label for="pl2">Dressed whole birds</label></li>
+        <li class="option-item"><input type="checkbox" id="pl3"/><label for="pl3">Cut parts</label></li>
+        <li class="option-item"><input type="checkbox" id="pl4"/><label for="pl4">Further processed products</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">3. Processing Capacity (birds/day)</div>
+      <div class="input-group">
+        <input class="text-input" type="number" data-label="S8 Processing Capacity birds/day" placeholder="0" min="0" style="max-width:160px"/>
+        <span class="input-unit">birds/day</span>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">4. Do You Meet Food Safety Standards? <span class="req">*</span></div>
+      <ul class="options-list" data-label="S8 Meets Food Safety Standards" data-type="radio">
+        <li class="option-item"><input type="radio" name="foodsafe" id="fsafe1"/><label for="fsafe1">Yes</label></li>
+        <li class="option-item"><input type="radio" name="foodsafe" id="fsafe2"/><label for="fsafe2">No</label></li>
+      </ul>
+    </div>
+
+    <!-- ─── SECTION 9 ─── -->
+    <div class="section-header"><h2><span>🔹</span> Section 9: Market Access</h2></div>
+
+    <div class="question-card">
+      <div class="question-label">1. Main Market <small style="font-weight:400;color:var(--muted)">(select all that apply)</small></div>
+      <ul class="options-list" data-label="S9 Main Market" data-type="checkbox">
+        <li class="option-item"><input type="checkbox" id="mkt1"/><label for="mkt1">Local market</label></li>
+        <li class="option-item"><input type="checkbox" id="mkt2"/><label for="mkt2">Hotels / restaurants</label></li>
+        <li class="option-item"><input type="checkbox" id="mkt3"/><label for="mkt3">Supermarkets</label></li>
+        <li class="option-item"><input type="checkbox" id="mkt4"/><label for="mkt4">Export</label></li>
+        <li class="option-item"><input type="checkbox" id="mkt5"/><label for="mkt5">Niche markets</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">2. Do You Have Cold Chain Logistics? <span class="req">*</span></div>
+      <ul class="options-list" data-label="S9 Cold Chain Logistics" data-type="radio">
+        <li class="option-item"><input type="radio" name="coldchain" id="cc1"/><label for="cc1">Yes</label></li>
+        <li class="option-item"><input type="radio" name="coldchain" id="cc2"/><label for="cc2">No</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">3. Major Market Challenges <small style="font-weight:400;color:var(--muted)">(select all that apply)</small></div>
+      <ul class="options-list" data-label="S9 Market Challenges" data-type="checkbox">
+        <li class="option-item"><input type="checkbox" id="mch1"/><label for="mch1">Competition from imports</label></li>
+        <li class="option-item"><input type="checkbox" id="mch2"/><label for="mch2">Low pricing</label></li>
+        <li class="option-item"><input type="checkbox" id="mch3"/><label for="mch3">Poor storage</label></li>
+        <li class="option-item"><input type="checkbox" id="mch4"/><label for="mch4">Transportation</label></li>
+        <li class="option-item"><input type="checkbox" id="mch5"/><label for="mch5">Standard regulations</label></li>
+      </ul>
+    </div>
+
+    <!-- ─── SECTION 10 ─── -->
+    <div class="section-header"><h2><span>🔹</span> Section 10: Animal Health &amp; Biosecurity</h2></div>
+
+    <div class="question-card">
+      <div class="question-label">1. Do You Follow a Vaccination Program? <span class="req">*</span></div>
+      <ul class="options-list" data-label="S10 Vaccination Program" data-type="radio">
+        <li class="option-item"><input type="radio" name="vaccine" id="vac1"/><label for="vac1">Yes</label></li>
+        <li class="option-item"><input type="radio" name="vaccine" id="vac2"/><label for="vac2">No</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">2. Common Diseases (list up to 3)</div>
+      <div class="numbered-inputs">
+        <div class="numbered-input"><span>1.</span><input class="text-input" type="text" data-label="S10 Disease 1" placeholder="Disease name"/></div>
+        <div class="numbered-input"><span>2.</span><input class="text-input" type="text" data-label="S10 Disease 2" placeholder="Disease name"/></div>
+        <div class="numbered-input"><span>3.</span><input class="text-input" type="text" data-label="S10 Disease 3" placeholder="Disease name"/></div>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">3. Access to Veterinary Services <span class="req">*</span></div>
+      <ul class="options-list" data-label="S10 Veterinary Access" data-type="radio">
+        <li class="option-item"><input type="radio" name="vetaccess" id="vet1"/><label for="vet1">Yes</label></li>
+        <li class="option-item"><input type="radio" name="vetaccess" id="vet2"/><label for="vet2">No</label></li>
+      </ul>
+    </div>
+
+    <!-- ─── SECTION 11 ─── -->
+    <div class="section-header"><h2><span>🔹</span> Section 11: Environmental Management</h2></div>
+
+    <div class="question-card">
+      <div class="question-label">1. Waste Management Method <small style="font-weight:400;color:var(--muted)">(select all that apply)</small></div>
+      <ul class="options-list" data-label="S11 Waste Management" data-type="checkbox">
+        <li class="option-item"><input type="checkbox" id="wm1"/><label for="wm1">Composting</label></li>
+        <li class="option-item"><input type="checkbox" id="wm2"/><label for="wm2">Disposal</label></li>
+        <li class="option-item"><input type="checkbox" id="wm3"/><label for="wm3">Sale as manure</label></li>
+        <li class="option-item"><input type="checkbox" id="wm4"/><label for="wm4">None</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">2. Environmental Challenges</div>
+      <textarea class="text-input" data-label="S11 Environmental Challenges" placeholder="Describe any environmental challenges you face…"></textarea>
+    </div>
+
+    <!-- ─── SECTION 12 ─── -->
+    <div class="section-header"><h2><span>🔹</span> Section 12: Policy &amp; 24-Hour Economy Alignment</h2></div>
+
+    <div class="question-card">
+      <div class="question-label">1. Are You Aware of the 24-Hour Economy Policy? <span class="req">*</span></div>
+      <ul class="options-list" data-label="S12 Aware of 24h Policy" data-type="radio">
+        <li class="option-item"><input type="radio" name="aware24" id="aw1"/><label for="aw1">Yes</label></li>
+        <li class="option-item"><input type="radio" name="aware24" id="aw2"/><label for="aw2">No</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">2. Are You Willing to Operate Under a 24-Hour System? <span class="req">*</span></div>
+      <ul class="options-list" data-label="S12 Willing to Operate 24h" data-type="radio">
+        <li class="option-item"><input type="radio" name="willing24" id="wi1"/><label for="wi1">Yes</label></li>
+        <li class="option-item"><input type="radio" name="willing24" id="wi2"/><label for="wi2">No</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">3. What Support Do You Need? <small style="font-weight:400;color:var(--muted)">(select all that apply)</small></div>
+      <ul class="options-list" data-label="S12 Support Needed" data-type="checkbox">
+        <li class="option-item"><input type="checkbox" id="sup1"/><label for="sup1">Financing</label></li>
+        <li class="option-item"><input type="checkbox" id="sup2"/><label for="sup2">Electricity</label></li>
+        <li class="option-item"><input type="checkbox" id="sup3"/><label for="sup3">Training</label></li>
+        <li class="option-item"><input type="checkbox" id="sup4"/><label for="sup4">Infrastructure</label></li>
+        <li class="option-item"><input type="checkbox" id="sup5"/><label for="sup5">Market access</label></li>
+      </ul>
+    </div>
+
+    <div class="question-card">
+      <div class="question-label">4. Additional Comments</div>
+      <textarea class="text-input" data-label="S12 Additional Comments" rows="4" placeholder="Any other information you would like to share…"></textarea>
+    </div>
+
+    <!-- ─── FOOTER ─── -->
+    <div class="form-footer">
+      <button type="submit" class="btn-submit" id="submit-btn">
+        <span id="btn-text">Submit</span>
+        <span class="spinner" id="btn-spinner"></span>
+      </button>
+    </div>
+
+    <div class="error-toast" id="error-toast">
+      ⚠️ There was a problem submitting your response. Please try again or contact the survey administrator.
+    </div>
+
+  </form>
+
+  <!-- ══ SUCCESS SCREEN ══ -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-icon">✅</div>
+    <h2>Response Submitted!</h2>
+    <p>Thank you for completing the Integrated Poultry Business Needs Assessment. Your response has been recorded and will contribute to Ghana's 24-Hour Economy Policy planning.</p>
+  </div>
+
+  <p style="text-align:center;font-size:.75rem;color:#bdc1c6;margin-top:40px;padding-bottom:20px">
+    Integrated Poultry Business Needs Assessment – 24-Hour Economy Policy Ghana &nbsp;|&nbsp; All responses are confidential
+  </p>
+
+</div><!-- /form-wrapper -->
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  ▶ CONFIGURE THIS BEFORE PUBLISHING
+//  Paste your Google Apps Script Web App URL below.
+//  Leave empty ('') to see a setup warning banner.
+// ══════════════════════════════════════════════════════════
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbx91NyIJgYWLUgnGsSSuMKVN0iYGJWgCS01vd6RwLlm0xOjtV9CSVdOYkyvnY9ibnyNxA/exec';
+
+// ── Config banner ─────────────────────────────────────────
+if (!SHEETS_URL) {
+  document.getElementById('config-banner').style.display = 'flex';
+}
+
+// ── Progress bar ──────────────────────────────────────────
+function updateProgress() {
+  const cards = document.querySelectorAll('.question-card');
+  const filled = [...cards].filter(card => {
+    const inp = card.querySelector('input[type="text"],input[type="number"],input[type="tel"],input[type="email"],textarea');
+    const rad = card.querySelector('input[type="radio"]:checked');
+    const chk = card.querySelector('input[type="checkbox"]:checked');
+    return (inp && inp.value.trim()) || rad || chk;
+  }).length;
+  const pct = Math.round((filled / cards.length) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  const sectionEls = document.querySelectorAll('.section-header');
+  let cur = 1;
+  sectionEls.forEach((el, i) => { if (el.getBoundingClientRect().top < 80) cur = i + 1; });
+  document.getElementById('progress-label').textContent = `Section ${cur} of 12 · ${pct}% complete`;
+}
+document.addEventListener('change', updateProgress);
+document.addEventListener('input', updateProgress);
+document.addEventListener('scroll', updateProgress);
+
+// ── Conditional sections ──────────────────────────────────
+function toggle(id, show) {
+  document.getElementById(id).style.display = show ? 'block' : 'none';
+}
+
+// ── Collect all answers into a flat object ────────────────
+function collectData() {
+  const data = { Timestamp: new Date().toLocaleString('en-GH', { timeZone: 'Africa/Accra' }) };
+
+  // Text / number / email / tel / textarea inputs with data-label
+  document.querySelectorAll('[data-label]').forEach(el => {
+    const tag = el.tagName.toLowerCase();
+    const label = el.dataset.label;
+    const type = el.dataset.type;
+
+    if (tag === 'input' || tag === 'textarea') {
+      data[label] = el.value.trim();
+    } else if (tag === 'select') {
+      data[label] = el.value;
+    } else if (tag === 'ul') {
+      if (type === 'radio') {
+        const checked = el.querySelector('input[type="radio"]:checked');
+        data[label] = checked ? checked.nextElementSibling.textContent.trim() : '';
+      } else if (type === 'checkbox') {
+        const checked = [...el.querySelectorAll('input[type="checkbox"]:checked')];
+        data[label] = checked.map(c => c.nextElementSibling.textContent.trim()).join('; ');
+      }
+    }
+  });
+
+  return data;
+}
+
+// ── Submit handler ────────────────────────────────────────
+document.getElementById('main-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const btn = document.getElementById('submit-btn');
+  const btnText = document.getElementById('btn-text');
+  const spinner = document.getElementById('btn-spinner');
+  const errorToast = document.getElementById('error-toast');
+
+  // Loading state
+  btn.disabled = true;
+  btnText.textContent = 'Submitting…';
+  spinner.style.display = 'inline-block';
+  errorToast.style.display = 'none';
+
+  const payload = collectData();
+
+  // If no URL configured, just show success (useful during testing)
+  if (!SHEETS_URL) {
+    showSuccess();
+    return;
+  }
+
+  try {
+    await fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors', // required for Apps Script web apps
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        headers: Object.keys(payload),
+        values: Object.values(payload)
+      })
+    });
+    // no-cors means we can't read the response body — if fetch didn't throw, treat as success
+    showSuccess();
+  } catch (err) {
+    btn.disabled = false;
+    btnText.textContent = 'Submit';
+    spinner.style.display = 'none';
+    errorToast.style.display = 'block';
+    console.error('Submission error:', err);
+  }
+});
+
+function showSuccess() {
+  document.getElementById('main-form').style.display = 'none';
+  document.getElementById('success-screen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
